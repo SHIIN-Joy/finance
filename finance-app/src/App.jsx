@@ -118,39 +118,57 @@ const INIT = {
 
 // ─── UI Primitives ────────────────────────────────────────────────────────────
 const Badge = ({ label, color }) => (
-  <span style={{ background: color+"22", color, border:`1px solid ${color}44`, borderRadius:6, padding:"2px 10px", fontSize:12, fontWeight:700, whiteSpace:"nowrap" }}>{label}</span>
+  <span style={{ background: color+"22", color, border:`1px solid ${color}44`, borderRadius:6, padding:"2px 8px", fontSize:11, fontWeight:700, whiteSpace:"nowrap" }}>{label}</span>
 );
 const Card = ({ children, style }) => (
-  <div style={{ background:"#fff", borderRadius:14, padding:20, boxShadow:"0 2px 12px rgba(0,0,0,0.06)", ...style }}>{children}</div>
+  <div style={{ background:"#fff", borderRadius:14, padding:16, boxShadow:"0 2px 8px rgba(0,0,0,0.06)", ...style }}>{children}</div>
 );
 const Stat = ({ label, value, color="#1e293b", sub }) => (
-  <div style={{ background:"#fff", borderRadius:12, padding:"15px 18px", boxShadow:"0 2px 8px rgba(0,0,0,0.05)" }}>
-    <div style={{ fontSize:11, color:"#64748b", fontWeight:700, letterSpacing:0.8, marginBottom:5 }}>{label}</div>
-    <div style={{ fontSize:20, fontWeight:800, color }}>{value}</div>
-    {sub && <div style={{ fontSize:11, color:"#94a3b8", marginTop:2 }}>{sub}</div>}
+  <div style={{ background:"#fff", borderRadius:12, padding:"12px 14px", boxShadow:"0 2px 8px rgba(0,0,0,0.05)" }}>
+    <div style={{ fontSize:10, color:"#64748b", fontWeight:700, letterSpacing:0.6, marginBottom:4 }}>{label}</div>
+    <div style={{ fontSize:17, fontWeight:800, color }}>{value}</div>
+    {sub && <div style={{ fontSize:10, color:"#94a3b8", marginTop:2 }}>{sub}</div>}
   </div>
 );
-const inputSt = { width:"100%", padding:"8px 12px", borderRadius:8, border:"1.5px solid #e2e8f0", fontSize:14, background:"#f8fafc", color:"#1e293b", outline:"none", boxSizing:"border-box", fontFamily:"inherit" };
+const inputSt = { width:"100%", padding:"11px 14px", borderRadius:10, border:"1.5px solid #e2e8f0", fontSize:16, background:"#f8fafc", color:"#1e293b", outline:"none", boxSizing:"border-box", fontFamily:"inherit" };
 const labelSt = { fontSize:11, color:"#64748b", fontWeight:700, marginBottom:4, display:"block", letterSpacing:0.5 };
 const Th = ({ children }) => <th style={{ padding:"10px 13px", textAlign:"left", fontWeight:700, color:"#475569", fontSize:12, letterSpacing:0.4, whiteSpace:"nowrap" }}>{children}</th>;
 const Td = ({ children, style }) => <td style={{ padding:"10px 13px", fontSize:13, color:"#334155", ...style }}>{children}</td>;
 
-const btnFor = (color) => ({ background:`linear-gradient(135deg,${color}cc,${color})`, color:"#fff", border:"none", borderRadius:8, padding:"8px 18px", fontSize:13, fontWeight:600, cursor:"pointer", fontFamily:"inherit" });
-const btnSm = (bg, color) => ({ background:bg, color, border:"none", borderRadius:6, padding:"3px 10px", fontSize:12, fontWeight:600, cursor:"pointer", marginRight:4, fontFamily:"inherit" });
+const btnFor = (color) => ({ background:`linear-gradient(135deg,${color}cc,${color})`, color:"#fff", border:"none", borderRadius:10, padding:"10px 18px", fontSize:14, fontWeight:600, cursor:"pointer", fontFamily:"inherit" });
+const btnSm = (bg, color) => ({ background:bg, color, border:"none", borderRadius:6, padding:"5px 12px", fontSize:12, fontWeight:600, cursor:"pointer", marginRight:4, fontFamily:"inherit" });
 
-// ─── Modal ────────────────────────────────────────────────────────────────────
-const Modal = ({ title, accentColor, onClose, onSubmit, children, wide }) => (
-  <div style={{ position:"fixed", inset:0, background:"rgba(15,23,42,0.55)", zIndex:300, display:"flex", alignItems:"center", justifyContent:"center", padding:16 }}>
-    <div style={{ background:"#fff", borderRadius:16, width:"100%", maxWidth:wide?680:520, maxHeight:"90vh", overflow:"auto", boxShadow:"0 30px 80px rgba(0,0,0,0.25)" }}>
-      <div style={{ background:accentColor||"#1e3a5f", padding:"16px 22px", display:"flex", justifyContent:"space-between", alignItems:"center", position:"sticky", top:0, zIndex:1 }}>
-        <span style={{ color:"#fff", fontWeight:700, fontSize:15 }}>{title}</span>
-        <button onClick={onClose} style={{ background:"none", border:"none", color:"#fff", fontSize:22, cursor:"pointer", lineHeight:1 }}>×</button>
+// ─── Row Card (mobile-friendly record row) ────────────────────────────────────
+const RowCard = ({ left, right, sub, badge, onEdit, onDel, accentColor }) => (
+  <div style={{ background:"#fff", borderRadius:12, padding:"12px 14px", marginBottom:8, boxShadow:"0 1px 6px rgba(0,0,0,0.05)", display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
+    <div style={{ flex:1, minWidth:0 }}>
+      <div style={{ fontWeight:700, fontSize:14, color:"#1e293b", marginBottom:2 }}>{left}</div>
+      {sub && <div style={{ fontSize:12, color:"#94a3b8" }}>{sub}</div>}
+      {badge && <div style={{ marginTop:4 }}>{badge}</div>}
+    </div>
+    <div style={{ display:"flex", flexDirection:"column", alignItems:"flex-end", gap:6, marginLeft:10, flexShrink:0 }}>
+      <div style={{ fontWeight:800, fontSize:15, color:accentColor||"#1e293b" }}>{right}</div>
+      <div style={{ display:"flex", gap:4 }}>
+        <button style={btnSm("#dbeafe","#2563eb")} onClick={onEdit}>編輯</button>
+        <button style={btnSm("#fee2e2","#ef4444")} onClick={onDel}>刪除</button>
       </div>
-      <div style={{ padding:22 }}>
-        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:13 }}>{children}</div>
-        <div style={{ marginTop:18, display:"flex", gap:10, justifyContent:"flex-end" }}>
-          <button onClick={onClose} style={{ background:"#f1f5f9", color:"#475569", border:"none", borderRadius:8, padding:"8px 18px", fontSize:13, fontWeight:600, cursor:"pointer", fontFamily:"inherit" }}>取消</button>
-          <button onClick={onSubmit} style={{ ...(btnFor(accentColor||"#2563eb")), padding:"8px 22px" }}>儲存</button>
+    </div>
+  </div>
+);
+
+// ─── Modal (mobile bottom sheet) ─────────────────────────────────────────────
+const Modal = ({ title, accentColor, onClose, onSubmit, children }) => (
+  <div style={{ position:"fixed", inset:0, background:"rgba(15,23,42,0.55)", zIndex:300, display:"flex", alignItems:"flex-end", justifyContent:"center" }}>
+    <div style={{ background:"#fff", borderRadius:"20px 20px 0 0", width:"100%", maxWidth:520, maxHeight:"90vh", overflow:"auto", boxShadow:"0 -8px 40px rgba(0,0,0,0.2)" }}>
+      <div style={{ background:accentColor||"#1e3a5f", padding:"16px 20px", display:"flex", justifyContent:"space-between", alignItems:"center", borderRadius:"20px 20px 0 0" }}>
+        <span style={{ color:"#fff", fontWeight:700, fontSize:16 }}>{title}</span>
+        <button onClick={onClose} style={{ background:"rgba(255,255,255,0.2)", border:"none", color:"#fff", fontSize:18, cursor:"pointer", lineHeight:1, borderRadius:8, width:32, height:32, display:"flex", alignItems:"center", justifyContent:"center" }}>×</button>
+      </div>
+      <div style={{ padding:20 }}>
+        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>{children}</div>
+        <div style={{ marginTop:16, display:"flex", gap:10 }}>
+          <button onClick={onClose} style={{ flex:1, background:"#f1f5f9", color:"#475569", border:"none", borderRadius:10, padding:"13px", fontSize:15, fontWeight:600, cursor:"pointer", fontFamily:"inherit" }}>取消</button>
+          <button onClick={onSubmit} style={{ flex:2, ...(btnFor(accentColor||"#2563eb")), padding:"13px", fontSize:15 }}>儲存</button>
         </div>
       </div>
     </div>
@@ -190,8 +208,8 @@ function LedgerTabs({ lid, color, income, setIncome, expense, setExpense, ar, se
   const closeModal = () => { setModal(null); setEditItem(null); };
 
   const save = (type) => {
-    if (!form.amount && type !== "income" && type !== "expense") return;
     if ((type==="income"||type==="expense") && (!form.description||!form.amount)) return;
+    if ((type==="ar"||type==="ap") && !form.amount) return;
     const entry = { ...form, id: editItem?.id||uid(), amount:Number(form.amount), paid:Number(form.paid||0) };
     const updater = (arr, set) => editItem ? set(arr.map(x=>x.id===editItem.id?entry:x)) : set([...arr, entry]);
     if (type==="income")  updater(income,  setIncome);
@@ -208,191 +226,154 @@ function LedgerTabs({ lid, color, income, setIncome, expense, setExpense, ar, se
   };
 
   const tabs = [
-    { key:"income",  label:"📈 收入明細" },
-    { key:"expense", label:"📉 支出明細" },
-    { key:"ar",      label:"📥 應收帳款" },
-    { key:"ap",      label:"📤 應付帳款" },
+    { key:"income",  label:"收入", icon:"📈" },
+    { key:"expense", label:"支出", icon:"📉" },
+    { key:"ar",      label:"應收", icon:"📥" },
+    { key:"ap",      label:"應付", icon:"📤" },
   ];
 
   return (
-    <div>
-      {/* Stats row */}
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:13, marginBottom:20 }}>
-        <Stat label="收入總計"   value={fmt(totalIncome)}  color="#10b981" sub={`${income.length} 筆`} />
-        <Stat label="支出總計"   value={fmt(totalExpense)} color="#ef4444" sub={`${expense.length} 筆`} />
-        <Stat label="應收餘額"   value={fmt(totalAR)}      color="#2563eb" sub={`${ar.filter(r=>r.status!=="paid").length} 筆待收`} />
-        <Stat label="應付餘額"   value={fmt(totalAP)}      color="#f59e0b" sub={`${ap.filter(r=>r.status!=="paid").length} 筆待付`} />
+    <div style={{ paddingBottom:20 }}>
+      {/* Stats 2x2 grid */}
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginBottom:16 }}>
+        <Stat label="收入總計" value={fmt(totalIncome)}  color="#10b981" sub={`${income.length} 筆`} />
+        <Stat label="支出總計" value={fmt(totalExpense)} color="#ef4444" sub={`${expense.length} 筆`} />
+        <Stat label="應收餘額" value={fmt(totalAR)}      color="#2563eb" sub={`${ar.filter(r=>r.status!=="paid").length} 筆待收`} />
+        <Stat label="應付餘額" value={fmt(totalAP)}      color="#f59e0b" sub={`${ap.filter(r=>r.status!=="paid").length} 筆待付`} />
       </div>
 
       {/* Tab bar */}
-      <div style={{ display:"flex", gap:2, borderBottom:"2px solid #e2e8f0", marginBottom:16 }}>
+      <div style={{ display:"flex", background:"#fff", borderRadius:12, padding:4, marginBottom:16, boxShadow:"0 1px 6px rgba(0,0,0,0.06)" }}>
         {tabs.map(t => (
           <button key={t.key} onClick={()=>setTab(t.key)} style={{
-            background:"none", border:"none", padding:"9px 16px", cursor:"pointer", fontFamily:"inherit",
-            fontWeight: tab===t.key?700:400, fontSize:14,
-            color: tab===t.key?color:"#64748b",
-            borderBottom: tab===t.key?`2px solid ${color}`:"2px solid transparent",
-            marginBottom:-2,
-          }}>{t.label}</button>
+            flex:1, background: tab===t.key ? color : "transparent",
+            border:"none", borderRadius:9, padding:"8px 4px", cursor:"pointer", fontFamily:"inherit",
+            fontWeight:700, fontSize:12, color: tab===t.key?"#fff":"#64748b",
+            transition:"all 0.15s",
+          }}>{t.icon}<br/>{t.label}</button>
         ))}
       </div>
 
       {/* ── Income ── */}
       {tab==="income" && (
-        <Card style={{ padding:0, overflow:"hidden" }}>
-          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"13px 16px", borderBottom:"1px solid #f1f5f9" }}>
-            <span style={{ fontWeight:700, color:"#1e293b" }}>收入明細</span>
-            <button style={btnFor(color)} onClick={()=>openModal("income")}>＋ 新增收入</button>
+        <div>
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:12 }}>
+            <span style={{ fontWeight:700, color:"#1e293b", fontSize:15 }}>收入明細</span>
+            <button style={btnFor(color)} onClick={()=>openModal("income")}>＋ 新增</button>
           </div>
-          <table style={{ width:"100%", borderCollapse:"collapse" }}>
-            <thead><tr style={{ background:"#f0fdf4" }}><Th>日期</Th><Th>科目</Th><Th>說明</Th><Th>金額</Th><Th>備註</Th><Th>操作</Th></tr></thead>
-            <tbody>
-              {[...income].reverse().map((r,i)=>(
-                <tr key={r.id} style={{ borderTop:"1px solid #f1f5f9", background:i%2===0?"#fff":"#f9fef9" }}>
-                  <Td style={{ color:"#64748b" }}>{r.date}</Td>
-                  <Td><span style={{ background:"#d1fae5", color:"#059669", borderRadius:6, padding:"2px 9px", fontSize:12, fontWeight:600 }}>{r.category}</span></Td>
-                  <Td style={{ fontWeight:600 }}>{r.description}</Td>
-                  <Td style={{ fontWeight:800, color:"#10b981" }}>+{fmt(r.amount)}</Td>
-                  <Td style={{ color:"#94a3b8" }}>{r.note||"-"}</Td>
-                  <Td>
-                    <button style={btnSm("#dbeafe","#2563eb")} onClick={()=>openModal("income",r)}>編輯</button>
-                    <button style={btnSm("#fee2e2","#ef4444")} onClick={()=>del("income",r.id)}>刪除</button>
-                  </Td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          {[...income].reverse().map(r=>(
+            <RowCard key={r.id}
+              left={r.description}
+              right={`+${fmt(r.amount)}`}
+              sub={`${r.date} · ${r.category}`}
+              accentColor="#10b981"
+              onEdit={()=>openModal("income",r)}
+              onDel={()=>del("income",r.id)}
+            />
+          ))}
           {income.length===0 && <div style={{ textAlign:"center", padding:32, color:"#94a3b8" }}>尚無收入記錄</div>}
-        </Card>
+        </div>
       )}
 
       {/* ── Expense ── */}
       {tab==="expense" && (
-        <Card style={{ padding:0, overflow:"hidden" }}>
-          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"13px 16px", borderBottom:"1px solid #f1f5f9" }}>
-            <span style={{ fontWeight:700, color:"#1e293b" }}>支出明細</span>
-            <button style={btnFor("#ef4444")} onClick={()=>openModal("expense")}>＋ 新增支出</button>
+        <div>
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:12 }}>
+            <span style={{ fontWeight:700, color:"#1e293b", fontSize:15 }}>支出明細</span>
+            <button style={btnFor("#ef4444")} onClick={()=>openModal("expense")}>＋ 新增</button>
           </div>
-          <table style={{ width:"100%", borderCollapse:"collapse" }}>
-            <thead><tr style={{ background:"#fff5f5" }}><Th>日期</Th><Th>科目</Th><Th>說明</Th><Th>金額</Th><Th>備註</Th><Th>操作</Th></tr></thead>
-            <tbody>
-              {[...expense].reverse().map((r,i)=>(
-                <tr key={r.id} style={{ borderTop:"1px solid #f1f5f9", background:i%2===0?"#fff":"#fffafa" }}>
-                  <Td style={{ color:"#64748b" }}>{r.date}</Td>
-                  <Td><span style={{ background:"#fee2e2", color:"#dc2626", borderRadius:6, padding:"2px 9px", fontSize:12, fontWeight:600 }}>{r.category}</span></Td>
-                  <Td style={{ fontWeight:600 }}>{r.description}</Td>
-                  <Td style={{ fontWeight:800, color:"#ef4444" }}>-{fmt(r.amount)}</Td>
-                  <Td style={{ color:"#94a3b8" }}>{r.note||"-"}</Td>
-                  <Td>
-                    <button style={btnSm("#dbeafe","#2563eb")} onClick={()=>openModal("expense",r)}>編輯</button>
-                    <button style={btnSm("#fee2e2","#ef4444")} onClick={()=>del("expense",r.id)}>刪除</button>
-                  </Td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          {[...expense].reverse().map(r=>(
+            <RowCard key={r.id}
+              left={r.description}
+              right={`-${fmt(r.amount)}`}
+              sub={`${r.date} · ${r.category}`}
+              accentColor="#ef4444"
+              onEdit={()=>openModal("expense",r)}
+              onDel={()=>del("expense",r.id)}
+            />
+          ))}
           {expense.length===0 && <div style={{ textAlign:"center", padding:32, color:"#94a3b8" }}>尚無支出記錄</div>}
-        </Card>
+        </div>
       )}
 
       {/* ── AR ── */}
       {tab==="ar" && (
-        <Card style={{ padding:0, overflow:"hidden" }}>
-          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"13px 16px", borderBottom:"1px solid #f1f5f9" }}>
-            <span style={{ fontWeight:700, color:"#1e293b" }}>應收帳款</span>
-            <button style={btnFor(color)} onClick={()=>openModal("ar")}>＋ 新增應收</button>
+        <div>
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:12 }}>
+            <span style={{ fontWeight:700, color:"#1e293b", fontSize:15 }}>應收帳款</span>
+            <button style={btnFor(color)} onClick={()=>openModal("ar")}>＋ 新增</button>
           </div>
-          <table style={{ width:"100%", borderCollapse:"collapse" }}>
-            <thead><tr style={{ background:"#f8fafc" }}><Th>日期</Th><Th>到期日</Th><Th>對象</Th><Th>說明</Th><Th>應收</Th><Th>已收</Th><Th>餘額</Th><Th>狀態</Th><Th>操作</Th></tr></thead>
-            <tbody>
-              {[...ar].reverse().map((r,i)=>{
-                const st=AR_STATUS[r.status]; const rem=Number(r.amount)-Number(r.paid||0);
-                return (
-                  <tr key={r.id} style={{ borderTop:"1px solid #f1f5f9", background:i%2===0?"#fff":"#fafafa" }}>
-                    <Td style={{ color:"#64748b" }}>{r.date}</Td>
-                    <Td style={{ color:r.status==="overdue"?"#ef4444":"#64748b", fontWeight:r.status==="overdue"?700:400 }}>{r.dueDate||"-"}</Td>
-                    <Td style={{ fontWeight:600 }}>{r.counterparty||"-"}</Td>
-                    <Td>{r.description}</Td>
-                    <Td style={{ fontWeight:600 }}>{fmt(r.amount)}</Td>
-                    <Td style={{ color:"#10b981", fontWeight:600 }}>{fmt(r.paid||0)}</Td>
-                    <Td style={{ fontWeight:700, color:rem>0?"#ef4444":"#10b981" }}>{fmt(rem)}</Td>
-                    <Td><Badge label={st?.label} color={st?.color} /></Td>
-                    <Td>
-                      <button style={btnSm("#dbeafe","#2563eb")} onClick={()=>openModal("ar",r)}>編輯</button>
-                      <button style={btnSm("#fee2e2","#ef4444")} onClick={()=>del("ar",r.id)}>刪除</button>
-                    </Td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          {[...ar].reverse().map(r=>{
+            const st=AR_STATUS[r.status]; const rem=Number(r.amount)-Number(r.paid||0);
+            return (
+              <RowCard key={r.id}
+                left={r.counterparty||r.description||"-"}
+                right={fmt(rem)}
+                sub={`${r.description} · 到期 ${r.dueDate||"未設"}`}
+                badge={<Badge label={st?.label} color={st?.color} />}
+                accentColor={rem>0?"#ef4444":"#10b981"}
+                onEdit={()=>openModal("ar",r)}
+                onDel={()=>del("ar",r.id)}
+              />
+            );
+          })}
           {ar.length===0 && <div style={{ textAlign:"center", padding:32, color:"#94a3b8" }}>尚無應收帳款</div>}
-        </Card>
+        </div>
       )}
 
       {/* ── AP ── */}
       {tab==="ap" && (
-        <Card style={{ padding:0, overflow:"hidden" }}>
-          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"13px 16px", borderBottom:"1px solid #f1f5f9" }}>
-            <span style={{ fontWeight:700, color:"#1e293b" }}>應付帳款</span>
-            <button style={btnFor("#f59e0b")} onClick={()=>openModal("ap")}>＋ 新增應付</button>
+        <div>
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:12 }}>
+            <span style={{ fontWeight:700, color:"#1e293b", fontSize:15 }}>應付帳款</span>
+            <button style={btnFor("#f59e0b")} onClick={()=>openModal("ap")}>＋ 新增</button>
           </div>
-          <table style={{ width:"100%", borderCollapse:"collapse" }}>
-            <thead><tr style={{ background:"#f8fafc" }}><Th>日期</Th><Th>到期日</Th><Th>對象</Th><Th>說明</Th><Th>應付</Th><Th>已付</Th><Th>餘額</Th><Th>狀態</Th><Th>操作</Th></tr></thead>
-            <tbody>
-              {[...ap].reverse().map((r,i)=>{
-                const st=AP_STATUS[r.status]; const rem=Number(r.amount)-Number(r.paid||0);
-                return (
-                  <tr key={r.id} style={{ borderTop:"1px solid #f1f5f9", background:i%2===0?"#fff":"#fafafa" }}>
-                    <Td style={{ color:"#64748b" }}>{r.date}</Td>
-                    <Td style={{ color:r.status==="overdue"?"#ef4444":"#64748b", fontWeight:r.status==="overdue"?700:400 }}>{r.dueDate||"-"}</Td>
-                    <Td style={{ fontWeight:600 }}>{r.counterparty||"-"}</Td>
-                    <Td>{r.description}</Td>
-                    <Td style={{ fontWeight:600 }}>{fmt(r.amount)}</Td>
-                    <Td style={{ color:"#10b981", fontWeight:600 }}>{fmt(r.paid||0)}</Td>
-                    <Td style={{ fontWeight:700, color:rem>0?"#f59e0b":"#10b981" }}>{fmt(rem)}</Td>
-                    <Td><Badge label={st?.label} color={st?.color} /></Td>
-                    <Td>
-                      <button style={btnSm("#dbeafe","#2563eb")} onClick={()=>openModal("ap",r)}>編輯</button>
-                      <button style={btnSm("#fee2e2","#ef4444")} onClick={()=>del("ap",r.id)}>刪除</button>
-                    </Td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          {[...ap].reverse().map(r=>{
+            const st=AP_STATUS[r.status]; const rem=Number(r.amount)-Number(r.paid||0);
+            return (
+              <RowCard key={r.id}
+                left={r.counterparty||r.description||"-"}
+                right={fmt(rem)}
+                sub={`${r.description} · 到期 ${r.dueDate||"未設"}`}
+                badge={<Badge label={st?.label} color={st?.color} />}
+                accentColor={rem>0?"#f59e0b":"#10b981"}
+                onEdit={()=>openModal("ap",r)}
+                onDel={()=>del("ap",r.id)}
+              />
+            );
+          })}
           {ap.length===0 && <div style={{ textAlign:"center", padding:32, color:"#94a3b8" }}>尚無應付帳款</div>}
-        </Card>
+        </div>
       )}
 
       {/* ── Modals ── */}
       {(modal==="income"||modal==="expense") && (
         <Modal title={`${editItem?"編輯":"新增"}${modal==="income"?"收入":"支出"}`} accentColor={modal==="income"?color:"#ef4444"} onClose={closeModal} onSubmit={()=>save(modal)}>
-          <Field label="日期 *"><input type="date" style={inputSt} value={form.date||today()} onChange={e=>setForm({...form,date:e.target.value})} /></Field>
-          <Field label="科目">
+          <Field label="日期 *" full><input type="date" style={inputSt} value={form.date||today()} onChange={e=>setForm({...form,date:e.target.value})} /></Field>
+          <Field label="科目" full>
             <select style={inputSt} value={form.category||""} onChange={e=>setForm({...form,category:e.target.value})}>
               {(modal==="income"?iCats:eCats).map(c=><option key={c} value={c}>{c}</option>)}
             </select>
           </Field>
           <Field label="說明 *" full><input style={inputSt} value={form.description||""} onChange={e=>setForm({...form,description:e.target.value})} placeholder="說明" /></Field>
-          <Field label="金額 (NT$) *"><input type="number" style={inputSt} value={form.amount||""} onChange={e=>setForm({...form,amount:e.target.value})} placeholder="0" /></Field>
-          <Field label="備註"><input style={inputSt} value={form.note||""} onChange={e=>setForm({...form,note:e.target.value})} placeholder="選填" /></Field>
+          <Field label="金額 (NT$) *" full><input type="number" style={inputSt} value={form.amount||""} onChange={e=>setForm({...form,amount:e.target.value})} placeholder="0" /></Field>
+          <Field label="備註" full><input style={inputSt} value={form.note||""} onChange={e=>setForm({...form,note:e.target.value})} placeholder="選填" /></Field>
         </Modal>
       )}
       {(modal==="ar"||modal==="ap") && (
         <Modal title={`${editItem?"編輯":"新增"}${modal==="ar"?"應收帳款":"應付帳款"}`} accentColor={modal==="ar"?color:"#f59e0b"} onClose={closeModal} onSubmit={()=>save(modal)}>
           <Field label="日期 *"><input type="date" style={inputSt} value={form.date||today()} onChange={e=>setForm({...form,date:e.target.value})} /></Field>
           <Field label="到期日"><input type="date" style={inputSt} value={form.dueDate||""} onChange={e=>setForm({...form,dueDate:e.target.value})} /></Field>
-          <Field label={modal==="ar"?"客戶 / 對象":"廠商 / 對象"} full><input style={inputSt} value={form.counterparty||""} onChange={e=>setForm({...form,counterparty:e.target.value})} placeholder="對象名稱" /></Field>
+          <Field label={modal==="ar"?"客戶":"廠商"} full><input style={inputSt} value={form.counterparty||""} onChange={e=>setForm({...form,counterparty:e.target.value})} placeholder="對象名稱" /></Field>
           <Field label="說明" full><input style={inputSt} value={form.description||""} onChange={e=>setForm({...form,description:e.target.value})} placeholder="帳款說明" /></Field>
           <Field label="金額 (NT$) *"><input type="number" style={inputSt} value={form.amount||""} onChange={e=>setForm({...form,amount:e.target.value})} placeholder="0" /></Field>
-          <Field label={modal==="ar"?"已收 (NT$)":"已付 (NT$)"}><input type="number" style={inputSt} value={form.paid||"0"} onChange={e=>setForm({...form,paid:e.target.value})} placeholder="0" /></Field>
-          <Field label="狀態">
+          <Field label={modal==="ar"?"已收":"已付"}><input type="number" style={inputSt} value={form.paid||"0"} onChange={e=>setForm({...form,paid:e.target.value})} placeholder="0" /></Field>
+          <Field label="狀態" full>
             <select style={inputSt} value={form.status||"pending"} onChange={e=>setForm({...form,status:e.target.value})}>
               {Object.entries(modal==="ar"?AR_STATUS:AP_STATUS).map(([k,v])=><option key={k} value={k}>{v.label}</option>)}
             </select>
           </Field>
-          <Field label="備註"><input style={inputSt} value={form.note||""} onChange={e=>setForm({...form,note:e.target.value})} placeholder="選填" /></Field>
+          <Field label="備註" full><input style={inputSt} value={form.note||""} onChange={e=>setForm({...form,note:e.target.value})} placeholder="選填" /></Field>
         </Modal>
       )}
     </div>
@@ -760,7 +741,7 @@ function BizView({ color }) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// ROOT APP
+// ROOT APP — Mobile First
 // ═══════════════════════════════════════════════════════════════════════════════
 export default function App() {
   const [activeLedger, setActiveLedger] = useState("biz");
@@ -783,50 +764,26 @@ export default function App() {
   const activeLedgerInfo = LEDGERS.find(l => l.id === activeLedger);
 
   return (
-    <div style={{ minHeight:"100vh", background:"#f0f4f8", fontFamily:"'Noto Sans TC','PingFang TC',sans-serif" }}>
-      {/* ── Top Header ── */}
-      <div style={{ background:"linear-gradient(135deg,#0f2040,#1e3a5f)", padding:"0" }}>
-        <div style={{ maxWidth:1300, margin:"0 auto", padding:"0 24px" }}>
-          <div style={{ display:"flex", alignItems:"center", gap:0 }}>
-            <div style={{ padding:"16px 20px 0 0", borderRight:"1px solid rgba(255,255,255,0.1)", marginRight:0 }}>
-              <div style={{ fontSize:10, color:"rgba(255,255,255,0.4)", fontWeight:700, letterSpacing:1.8 }}>FINANCE SYSTEM</div>
-              <div style={{ fontSize:15, color:"#fff", fontWeight:800, letterSpacing:0.5 }}>帳務管理系統</div>
-            </div>
-            <div style={{ display:"flex", gap:2, padding:"0 20px" }}>
-              {LEDGERS.map(l => (
-                <button key={l.id} onClick={() => setActiveLedger(l.id)} style={{
-                  background: activeLedger===l.id ? "rgba(255,255,255,0.13)" : "transparent",
-                  border:"none", borderRadius:"10px 10px 0 0", padding:"14px 22px",
-                  cursor:"pointer", fontFamily:"inherit",
-                  display:"flex", alignItems:"center", gap:8,
-                  color: activeLedger===l.id ? "#fff" : "rgba(255,255,255,0.5)",
-                  fontWeight: activeLedger===l.id ? 700 : 400, fontSize:15,
-                  borderBottom: activeLedger===l.id ? `3px solid ${l.color}` : "3px solid transparent",
-                  transition:"all 0.15s",
-                }}>
-                  <span style={{ fontSize:18 }}>{l.icon}</span>{l.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
+    <div style={{ minHeight:"100vh", maxWidth:480, margin:"0 auto", background:"#f0f4f8", fontFamily:"'Noto Sans TC','PingFang TC',sans-serif", position:"relative" }}>
 
-      {/* ── Content ── */}
-      <div style={{ maxWidth:1300, margin:"0 auto", padding:"24px" }}>
-        <div style={{ marginBottom:18, display:"flex", alignItems:"center", gap:10 }}>
-          <span style={{ fontSize:22 }}>{activeLedgerInfo.icon}</span>
+      {/* ── Top Header ── */}
+      <div style={{ background:`linear-gradient(135deg,${activeLedgerInfo.color}dd,${activeLedgerInfo.color})`, padding:"16px 16px 14px", position:"sticky", top:0, zIndex:100, boxShadow:"0 2px 12px rgba(0,0,0,0.15)" }}>
+        <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+          <span style={{ fontSize:24 }}>{activeLedgerInfo.icon}</span>
           <div>
-            <div style={{ fontSize:20, fontWeight:800, color:"#1e293b" }}>{activeLedgerInfo.label}</div>
-            <div style={{ fontSize:13, color:"#64748b" }}>
-              { activeLedger==="biz"      ? "商務中心帳務管理 — 分公司作業" :
+            <div style={{ fontSize:18, color:"#fff", fontWeight:800, lineHeight:1.2 }}>{activeLedgerInfo.label}</div>
+            <div style={{ fontSize:11, color:"rgba(255,255,255,0.75)" }}>
+              { activeLedger==="biz"      ? "商務中心帳務管理" :
                 activeLedger==="salon"    ? "拾形造型收支帳務" :
                 activeLedger==="personal" ? "個人收支帳務" :
                                             "寵物開銷 & 汽車開銷" }
             </div>
           </div>
         </div>
+      </div>
 
+      {/* ── Content ── */}
+      <div style={{ padding:"16px 14px 90px" }}>
         {activeLedger==="biz" && <BizView color={activeLedgerInfo.color} />}
 
         {activeLedger==="salon" && (
@@ -855,6 +812,20 @@ export default function App() {
             ap={dbwAP}           setAp={setDbwAP}
           />
         )}
+      </div>
+
+      {/* ── Bottom Nav ── */}
+      <div style={{ position:"fixed", bottom:0, left:"50%", transform:"translateX(-50%)", width:"100%", maxWidth:480, background:"#fff", borderTop:"1px solid #e2e8f0", display:"flex", zIndex:200, boxShadow:"0 -4px 20px rgba(0,0,0,0.08)" }}>
+        {LEDGERS.map(l => (
+          <button key={l.id} onClick={() => setActiveLedger(l.id)} style={{
+            flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center",
+            padding:"10px 4px 12px", background:"none", border:"none", cursor:"pointer", fontFamily:"inherit",
+            borderTop: activeLedger===l.id ? `3px solid ${l.color}` : "3px solid transparent",
+          }}>
+            <span style={{ fontSize:20, marginBottom:2 }}>{l.icon}</span>
+            <span style={{ fontSize:10, fontWeight: activeLedger===l.id?700:400, color: activeLedger===l.id?l.color:"#94a3b8" }}>{l.label}</span>
+          </button>
+        ))}
       </div>
     </div>
   );
